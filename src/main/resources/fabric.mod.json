@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "simpipes",
+  "version": "${version}",
+  "name": "Simpipes",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/simpipes/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "dev.hephaestus.simpipes.client.SimpipesClient"
+    ],
+    "main": [
+      "dev.hephaestus.simpipes.Simpipes"
+    ]
+  },
+  "mixins": [
+    "simpipes.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.6",
+    "fabric": "*",
+    "minecraft": "1.17"
+  }
+}
