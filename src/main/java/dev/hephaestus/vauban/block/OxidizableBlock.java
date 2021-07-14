@@ -2,22 +2,12 @@ package dev.hephaestus.vauban.block;
 
 import dev.hephaestus.vauban.block.properties.BlockProperties;
 import dev.hephaestus.vauban.block.properties.OxidizationLevel;
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -74,8 +64,15 @@ public abstract class OxidizableBlock extends Block {
                 BlockState blockState = world.getBlockState(blockPos);
                 Block block = blockState.getBlock();
 
+                int m = -1;
+
                 if (block.getStateManager().getProperties().contains(OxidizationLevel.PROPERTY)) {
-                    int m = blockState.get(OxidizationLevel.PROPERTY).ordinal();
+                    m = blockState.get(OxidizationLevel.PROPERTY).ordinal();
+                } else if (block instanceof net.minecraft.block.OxidizableBlock oxidizable) {
+                    m = oxidizable.getDegradationLevel().ordinal();
+                }
+
+                if (m >= 0) {
                     if (m < i) {
                         return;
                     }
@@ -85,7 +82,6 @@ public abstract class OxidizableBlock extends Block {
                     } else {
                         ++j;
                     }
-
                 }
             }
         }
