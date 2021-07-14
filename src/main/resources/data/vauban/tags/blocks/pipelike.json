@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#vauban:pipes",
+    "vauban:buffer",
+    "vauban:distributor",
+    "vauban:filter"
+  ]
+}

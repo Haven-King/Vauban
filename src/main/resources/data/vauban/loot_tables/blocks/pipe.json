@@ -1,0 +1,96 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "vauban:pipe"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "functions": [
+        {
+          "function": "copy_state",
+          "block": "vauban:pipe",
+          "properties": [
+            "oxidization"
+          ],
+          "conditions": [
+            {
+              "condition": "inverted",
+              "term": {
+                "condition": "block_state_property",
+                "block": "vauban:pipe",
+                "properties": {
+                  "oxidization": "unaffected"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "function": "copy_state",
+          "block": "vauban:pipe",
+          "properties": [
+            "waxed"
+          ],
+          "conditions": [
+            {
+              "condition": "block_state_property",
+              "block": "vauban:pipe",
+              "properties": {
+                "waxed": "true"
+              }
+            }
+          ]
+        },
+        {
+          "function": "set_nbt",
+          "tag": "{CustomModelData: 1}",
+          "conditions": [
+            {
+              "condition": "block_state_property",
+              "block": "vauban:pipe",
+              "properties": {
+                "oxidization": "exposed"
+              }
+            }
+          ]
+        },
+        {
+          "function": "set_nbt",
+          "tag": "{CustomModelData: 2}",
+          "conditions": [
+            {
+              "condition": "block_state_property",
+              "block": "vauban:pipe",
+              "properties": {
+                "oxidization": "weathered"
+              }
+            }
+          ]
+        },
+        {
+          "function": "set_nbt",
+          "tag": "{CustomModelData: 3}",
+          "conditions": [
+            {
+              "condition": "block_state_property",
+              "block": "vauban:pipe",
+              "properties": {
+                "oxidization": "oxidized"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

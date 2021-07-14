@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:hopper",
+    "vauban:pipe",
+    "vauban:redstone_pipe",
+    "vauban:buffer",
+    "vauban:distributor",
+    "vauban:filter"
+  ]
+}

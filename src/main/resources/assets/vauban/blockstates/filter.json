@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "oxidization=unaffected": {
+      "model": "vauban:block/copper_filter"
+    },
+    "oxidization=exposed": {
+      "model": "vauban:block/exposed_copper_filter"
+    },
+    "oxidization=weathered": {
+      "model": "vauban:block/weathered_copper_filter"
+    },
+    "oxidization=oxidized": {
+      "model": "vauban:block/oxidized_copper_filter"
+    }
+  }
+}

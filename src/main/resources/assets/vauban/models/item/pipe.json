@@ -1,0 +1,8 @@
+{
+  "parent": "vauban:item/copper_pipe",
+  "overrides": [
+    {"predicate": {"custom_model_data": 1}, "model": "vauban:item/exposed_copper_pipe"},
+    {"predicate": {"custom_model_data": 2}, "model": "vauban:item/weathered_copper_pipe"},
+    {"predicate": {"custom_model_data": 3}, "model": "vauban:item/oxidized_copper_pipe"}
+  ]
+}

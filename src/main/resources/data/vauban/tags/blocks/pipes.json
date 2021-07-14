@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "vauban:pipe",
+    "vauban:redstone_pipe"
+  ]
+}

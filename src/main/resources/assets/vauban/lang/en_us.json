@@ -1,0 +1,15 @@
+{
+  "block.vauban.pipe": "Pipe",
+  "block.vauban.buffer": "Item Buffer",
+  "block.vauban.distributor": "Item Distributor",
+  "block.vauban.filter": "Item Filter",
+  "block.vauban.redstone_pipe": "Redstone Pipe",
+  "vauban.oxidization.unaffected": "Copper %s",
+  "vauban.oxidization.exposed": "Exposed Copper %s",
+  "vauban.oxidization.weathered": "Weathered Copper %s",
+  "vauban.oxidization.oxidized": "Oxidized Copper %s",
+  "vauban.waxed": "Waxed %s",
+  "vauban.filter": "Item Filter",
+  "itemGroup.vauban.items": "Vauban",
+  "key.vauban.alt": "Alternate Placement"
+}

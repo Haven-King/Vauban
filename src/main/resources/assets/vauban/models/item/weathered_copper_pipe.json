@@ -1,0 +1,7 @@
+{
+	"parent": "vauban:item/pipe_base",
+	"textures": {
+		"0": "minecraft:block/weathered_copper",
+		"particle": "minecraft:block/weathered_copper"
+	}
+}

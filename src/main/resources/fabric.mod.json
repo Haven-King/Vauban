@@ -1,25 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "simpipes",
+  "id": "vauban",
   "version": "${version}",
-  "name": "Simpipes",
+  "name": "Vauban",
   "description": "",
   "authors": [],
   "contact": {},
   "license": "MIT",
-  "icon": "assets/simpipes/icon.png",
+  "icon": "assets/vauban/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "dev.hephaestus.simpipes.client.SimpipesClient"
+      "dev.hephaestus.vauban.client.VaubanClient",
+      "dev.hephaestus.vauban.networking.AlternatePlacementChannel"
     ],
     "main": [
-      "dev.hephaestus.simpipes.Simpipes"
+      "dev.hephaestus.vauban.Vauban",
+      "dev.hephaestus.vauban.networking.FilterChannel",
+      "dev.hephaestus.vauban.networking.AlternatePlacementChannel"
     ]
   },
   "mixins": [
-    "simpipes.mixins.json"
+    "vauban.mixins.json"
   ],
+  "accessWidener": "vauban.accesswidener",
   "depends": {
     "fabricloader": ">=0.11.6",
     "fabric": "*",

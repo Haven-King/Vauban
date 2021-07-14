@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "oxidization=unaffected": {
+      "model": "vauban:block/copper_redstone_pipe"
+    },
+    "oxidization=exposed": {
+      "model": "vauban:block/exposed_copper_redstone_pipe"
+    },
+    "oxidization=weathered": {
+      "model": "vauban:block/weathered_copper_redstone_pipe"
+    },
+    "oxidization=oxidized": {
+      "model": "vauban:block/oxidized_copper_redstone_pipe"
+    }
+  }
+}
