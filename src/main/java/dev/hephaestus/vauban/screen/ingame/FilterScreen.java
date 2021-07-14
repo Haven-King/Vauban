@@ -1,5 +1,6 @@
 package dev.hephaestus.vauban.screen.ingame;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.hephaestus.vauban.Vauban;
 import dev.hephaestus.vauban.screen.FilterBlockScreenHandler;
@@ -40,15 +41,42 @@ public class FilterScreen extends HandledScreen<FilterBlockScreenHandler> {
         int y = (this.height - this.backgroundHeight) / 2;
         drawTexture(matrices, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight, 512, 512);
 
+        for(int i = 0; i < this.handler.slots.size(); ++i) {
+            Slot slot = this.handler.slots.get(i);
+            if (slot.isEnabled()) {
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                ItemStack filter = this.handler.getFilter(slot.id);
+
+                if (!filter.isEmpty()) {
+                    int slotX = slot.x + this.x;
+                    int slotY = slot.y + this.y;
+
+                    ItemRenderer renderer = MinecraftClient.getInstance().getItemRenderer();
+
+                    RenderSystem.enableDepthTest();
+
+                    renderer.renderInGuiWithOverrides(filter, slotX, slotY);
+                    renderer.renderGuiItemOverlay(this.textRenderer, filter, slotX, slotY);
+                }
+            }
+        }
+
         matrices.push();
-        matrices.translate(0, 0, 50);
+        matrices.translate(0, 0, 200);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.5F);
         drawTexture(matrices, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight, 512, 512);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         matrices.pop();
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         super.render(matrices, mouseX, mouseY, delta);
+
         this.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 
@@ -61,27 +89,5 @@ public class FilterScreen extends HandledScreen<FilterBlockScreenHandler> {
         } else if (this.handler.getCursorStack().isEmpty() && this.focusedSlot != null && !(filter = this.handler.getFilter(this.focusedSlot.id)).isEmpty()) {
             this.renderTooltip(matrices, filter, x, y);
         }
-    }
-
-    @Override
-    public void drawSlot(MatrixStack matrices, Slot slot) {
-        ItemStack filter = this.handler.getFilter(slot.id);
-
-        if (!filter.isEmpty()) {
-            int x = slot.x;
-            int y = slot.y;
-
-            ItemRenderer renderer = MinecraftClient.getInstance().getItemRenderer();
-
-            RenderSystem.enableDepthTest();
-
-            matrices.push();
-            matrices.translate(0, 0, -75);
-            renderer.renderInGuiWithOverrides(filter, x, y);
-            renderer.renderGuiItemOverlay(this.textRenderer, filter, x, y);
-            matrices.pop();
-        }
-
-        super.drawSlot(matrices, slot);
     }
 }
