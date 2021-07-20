@@ -6,7 +6,8 @@
   "mixins": [
   ],
   "client": [
-    "SpriteAccessor"
+    "SpriteAccessor",
+    "client.gui.screen.MixinScreen"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,38 +1,39 @@
 package dev.hephaestus.vauban.client;
 
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import dev.hephaestus.vauban.Vauban;
-import dev.hephaestus.vauban.block.entity.FilterBlockEntity;
-import dev.hephaestus.vauban.block.entity.PipeBlockEntity;
 import dev.hephaestus.vauban.screen.ingame.FilterScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
-public class VaubanClient implements ClientModInitializer, ModelResourceProvider, HudRenderCallback {
+public class VaubanClient implements ClientModInitializer, ModelResourceProvider, ItemTooltipCallback {
+    @SuppressWarnings("deprecation")
     private static final SpriteIdentifier[] COPPER = new SpriteIdentifier[] {
             new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("block/copper_block")),
             new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("block/exposed_copper")),
@@ -40,9 +41,12 @@ public class VaubanClient implements ClientModInitializer, ModelResourceProvider
             new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("block/oxidized_copper"))
     };
 
+    private static final Multimap<Item, Text> TOOLTIPS = LinkedHashMultimap.create();
+
     private final Map<Identifier, UnbakedModel> models = new HashMap<>();
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onInitializeClient() {
         this.registerCopperVariants("pipe", PipeBlockModel::new);
         this.registerCopperVariants("filter", FilterBlockModel::new);
@@ -54,6 +58,13 @@ public class VaubanClient implements ClientModInitializer, ModelResourceProvider
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(manager -> this);
 
         ScreenRegistry.register(Vauban.FILTER_BLOCK_SCREEN_HANDLER, FilterScreen::new);
+
+        registerTooltips(Vauban.BUFFER_ITEM, 1);
+        registerTooltips(Vauban.DISTRIBUTOR_ITEM, 1);
+        registerTooltips(Vauban.FILTER_ITEM, 7);
+        registerTooltips(Vauban.REDSTONE_PIPE_ITEM, 2);
+
+        ItemTooltipCallback.EVENT.register(this);
     }
 
     private void registerCopperVariants(String name, Function<SpriteIdentifier, UnbakedModel> function) {
@@ -68,42 +79,16 @@ public class VaubanClient implements ClientModInitializer, ModelResourceProvider
         return this.models.get(resourceId);
     }
 
-    @Override
-    public void onHudRender(MatrixStack matrixStack, float tickDelta) {
+    private static void registerTooltips(Item item, @Range(from=1, to=Integer.MAX_VALUE) int tooltips) {
+        String key = Registry.ITEM.getId(item).toString().replace(":", ".");
 
-        if (MinecraftClient.getInstance().crosshairTarget instanceof BlockHitResult blockHitResult) {
-            World world = MinecraftClient.getInstance().world;
-            BlockPos pos = blockHitResult.getBlockPos();
-
-            if (world != null) {
-                Inventory inventory =
-                        world.getBlockState(pos).isOf(Vauban.PIPE_BLOCK) && world.getBlockEntity(pos) instanceof PipeBlockEntity pipeBlockEntity ? pipeBlockEntity
-                        : world.getBlockState(pos).isOf(Vauban.FILTER_BLOCK) && world.getBlockEntity(pos) instanceof FilterBlockEntity filterBlockEntity ? filterBlockEntity
-                        : null;
-
-                int[] slots = inventory instanceof FilterBlockEntity filter ? filter.getVisibleSlots(blockHitResult.getSide()) : new int[] {0, 1, 2};
-
-                if (inventory != null) {
-
-                    int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-                    int height = MinecraftClient.getInstance().getWindow().getScaledHeight();
-
-                    ItemRenderer renderer = MinecraftClient.getInstance().getItemRenderer();
-                    TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-
-                    for (int slot : slots) {
-                        int x = width / 2 + 9 + 18 * (slot % 3);
-                        int y = height / 2 - 9 + 18 * (slot / 3);
-                        ItemStack stack = inventory.getStack(slot);
-
-                        if (!stack.isEmpty()) {
-                            renderer.renderInGuiWithOverrides(stack, x, y);
-                            renderer.renderGuiItemOverlay(textRenderer, stack, x, y);
-                        }
-                    }
-                }
-            }
+        for (int i = 0; i < tooltips; ++i) {
+            TOOLTIPS.put(item, new TranslatableText(String.format("item.%s.tooltip%d", key, i)).formatted(Formatting.GRAY));
         }
     }
 
+    @Override
+    public void getTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
+        lines.addAll(TOOLTIPS.get(stack.getItem()));
+    }
 }
